@@ -40,7 +40,11 @@ def download_tweets(search=None, profile=None, sleep=DEFAULT_SLEEP):
     last_min_position = None
     while has_more_items:
         response = requests.get(url_more.format(term=urllib.quote_plus(term), max_position=min_position), headers={'User-agent': USER_AGENT}).text
-        print response
+        if response:
+            test1 = 'response'
+            print test1
+            print (response)
+            print ('test2')
         try:
             response_dict = json.loads(response)
         except:
