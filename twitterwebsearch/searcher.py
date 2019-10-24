@@ -26,10 +26,15 @@ def download_tweets(search=None, profile=None, sleep=DEFAULT_SLEEP):
     assert search or profile
 
     term = (search or profile)
+    print('Term : ', term)
     url = TWITTER_SEARCH_URL if search else TWITTER_PROFILE_URL
     url_more = TWITTER_SEARCH_MORE_URL if search else TWITTER_PROFILE_MORE_URL
 
     response = requests.get(url.format(term=urllib.quote_plus(term)), headers={'User-agent': USER_AGENT}).text
+    # response = requests.get(url.format(term=urllib.quote_plus(term)), headers={'User-agent': USER_AGENT})
+    # print response
+    # response = requests.get(url).text
+    # print response.encode("utf-8")
     max_position = find_value(response, 'data-max-position')
     min_position = find_value(response, 'data-min-position')
 
@@ -39,14 +44,15 @@ def download_tweets(search=None, profile=None, sleep=DEFAULT_SLEEP):
     has_more_items = True
     last_min_position = None
     while has_more_items:
-        response = requests.get(url_more.format(term=urllib.quote_plus(term), max_position=min_position), headers={'User-agent': USER_AGENT}).text
-        if response:
-            test1 = 'response'
-            print test1
-            print (response)
-            print ('test2')
+        # response = requests.get(url_more).text
+        #response = requests.get(url_more).text #.format(term=urllib.quote_plus(term), max_position=min_position), headers={'User-agent': USER_AGENT})
+        #print response
+        response = requests.get(url_more.format(term=urllib.quote_plus(term), max_position=min_position), headers={'User-agent': USER_AGENT})#.decode('utf8')#.text
+        
+        print type(response)
         try:
-            response_dict = json.loads(response)
+            response_dict = response.json()
+            # response_dict = json.loads(response)
         except:
             import datetime
             with open('__debug.response_%s.txt' % datetime.datetime.now().strftime('%Y-%m-%d.%H%M'), 'wb') as fh:
@@ -70,4 +76,5 @@ def download_tweets(search=None, profile=None, sleep=DEFAULT_SLEEP):
 def search(query):
     for tweet in download_tweets(search=query):
         yield tweet
+
 
