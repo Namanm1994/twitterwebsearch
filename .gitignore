@@ -6,5 +6,5 @@
 *.pyc
 
 # Ignore example output files
-/examples/example.ljson
+/twitterwebsearch/examples/*.txt
 
